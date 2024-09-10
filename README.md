@@ -5,6 +5,6 @@ in an assigned track. Objects are randomly placed at the track and the robot is 
 these objects. 
 
 trackborad is a white colored board and the track is a blac line. Other edges of board are also colored in black. 
-[Overview of trackboard](img/track_overview_pic.png)
+![Overview of trackboard](img/track_overview_pic.png)
 
 Implementing the code a real time system is suppose to be simulated. 
