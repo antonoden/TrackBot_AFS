@@ -2,10 +2,15 @@
 #include "LEDController.h"
 #include "soundController.h"
 
+typedef struct Stance {
+  bool rightTurn; 
+  bool leftTurn; 
+} Stance;
+
 bool benchmark = 1;
 TickType_t currentTick;
 int distanceSensor;
-int trackSensor;
+int trackSensor;      // 0 = black line, 1 = black line left, 2 = black line right 3 = white area
 
 bool driveStatus;
 bool avoidStatus;
@@ -13,10 +18,29 @@ bool obstacleStatus;
 bool statusChanged;
 int obstacleStatusTicker;
 
+Stance stance = { false, false };
+
+
+
 void getSensorStatus() {
   distanceSensor = zRobotGetUltraSensor();
   trackSensor = zRobotGetLineSensor();
-  if (distanceSensor < 80) obstacleStatus = true;
+  if (distanceSensor < 10) obstacleStatus = true;
+  switch (trackSensor) {
+    case 0: // black
+        stance.leftTurn = false;
+        stance.rightTurn = false;
+        break;
+    case 1: // turn left
+        stance.leftTurn = true;
+        break;
+    case 2: // turn right
+        stance.rightTurn = true;
+        break;
+    case 3: // out of line
+
+        break;
+  }
 }
 
 void resetSensorStatus() {
@@ -25,45 +49,45 @@ void resetSensorStatus() {
 }
 
 void avoidManeuver() {
-  if (!obstacleStatus) {
-    obstacleStatusTicker = 0;
-    avoidStatus = false;
-    Serial.println("Object out of sight. Avoid Maneuver aborted");
-    Serial.flush();
-  } else {
+  if(obstacleStatus) {
     obstacleStatusTicker += 1;
     obstacleStatus = false;
-    Serial.print("AvoidManeuver - Object distance is ");
+    /*Serial.print("AvoidManeuver - Object distance is ");
     Serial.print(distanceSensor);
     Serial.println(" cm");
     Serial.print(obstacleStatusTicker);
     Serial.println(" ticks since object was sighted");
-    Serial.flush();
+    Serial.flush();*/
     LEDrobotStop();
+    LEDrobotStopAlert();
     wheelRobotTurnOnSpot(true);
+  } else {
+    obstacleStatusTicker = 0;
+    avoidStatus = false;
+    driveStatus = true;
   }
 }
 
 void drive() {
-  Serial.flush();
-  switch (trackSensor) {
-    case 0:
-      LEDrobotForward();
-      wheelRobotForward();
-      break;
-    case 1:
+  if(driveStatus) {
+    if(stance.leftTurn = true) {
       LEDrobotLeft();
       wheelRobotTurnLeft();
-      break;
-    case 2:
+    } else if (stance.rightTurn = true) {
       LEDrobotRight();
       wheelRobotTurnRight();
-      break;
-    case 3:
-      LEDrobotStop();
-      wheelRobotStop();
-      ImperialMarch();
-      break;
+    } else {
+      switch(trackSensor) {
+        case 0:
+        LEDrobotForward();
+        wheelRobotForward();
+        break;
+        case 3:
+        LEDrobotStop();
+        wheelRobotStop();
+        break;
+      }
+    }
   }
 }
 

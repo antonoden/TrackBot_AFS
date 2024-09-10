@@ -23,6 +23,14 @@ void LEDrobotStop() {
     else { nextLEDtoGlow = 0; }
 }
 
+void LEDrobotStopAlert() {
+    turnOfAllLEDs();
+    zSetOneLed(nextLEDtoGlow, 0, LEDinstensity, LEDinstensity);
+    zLedRing.show();
+    if (nextLEDtoGlow < 11) { nextLEDtoGlow += + 1; }
+    else { nextLEDtoGlow = 0; }
+}
+
 void LEDrobotRight() {
     turnOfAllLEDs();
     zLedRing.setColorAt(4, 0, LEDinstensity, 0);

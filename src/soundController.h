@@ -66,11 +66,18 @@ void ImperialMarch() {
     buzzer.tone(melody[thisNote], noteDuration*0.9);
 
     // Wait for the specief duration before playing the next note.
-    delay(noteDuration);
+    zBlockingDelay(noteDuration);
     
     // stop the waveform generation before the next note.
     buzzer.noTone();
   }
+}
+
+void MakeSound() {
+  buzzer.setpin(45);
+  buzzer.tone(1000,10);
+  zBlockingDelay(10);
+  buzzer.noTone();
 }
 
 
