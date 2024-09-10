@@ -1,5 +1,5 @@
-#include "KauLab/src/kaulab.h"
-#include "main.h"
+#include "src/kaulab.h"
+#include "src/main.h"
 
 
 
