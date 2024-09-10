@@ -6,3 +6,4 @@ these objects.
 
 trackborad is a white colored board and the track is a blac line. Other edges of board are also colored in black. 
 
+Implementing the code a real time system is suppose to be simulated. 
