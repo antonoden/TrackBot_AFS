@@ -2,120 +2,76 @@
 #include "LEDController.h"
 #include "soundController.h"
 
-typedef struct Stance {
-  bool rightTurn; 
-  bool leftTurn; 
-} Stance;
+typedef struct DrivingStance {
+  bool rightTrackTurn; 
+  bool leftTrackTurn; 
+  bool avoidObject;
+  int avoidTicks;
+  bool objectDetected;
+  bool driveTrack;
+} DrivningStance;
 
-bool benchmark = 1;
-TickType_t currentTick;
+/* Variables not in use */
+
+/* Variables in use */
 int distanceSensor;
 int trackSensor;      // 0 = black line, 1 = black line left, 2 = black line right 3 = white area
 
-bool driveStatus;
-bool avoidStatus;
-bool obstacleStatus;
-bool statusChanged;
-int obstacleStatusTicker;
-
-Stance stance = { false, false };
-
-
+DrivingStance stance = { false, false, false, 0, false, true };
 
 void getSensorStatus() {
   distanceSensor = zRobotGetUltraSensor();
   trackSensor = zRobotGetLineSensor();
-  if (distanceSensor < 10) obstacleStatus = true;
+  if (distanceSensor < 40) {
+    stance.objectDetected = true;
+    stance.avoidObject = true;
+    stance.driveTrack = false;
+  }
   switch (trackSensor) {
     case 0: // black
-        stance.leftTurn = false;
-        stance.rightTurn = false;
+        stance.leftTrackTurn = false;
+        stance.rightTrackTurn = false;
         break;
     case 1: // turn left
-        stance.leftTurn = true;
+        stance.leftTrackTurn = true;
         break;
     case 2: // turn right
-        stance.rightTurn = true;
+        stance.rightTrackTurn = true;
         break;
     case 3: // out of line
-
+        
         break;
-  }
-}
-
-void resetSensorStatus() {
-  obstacleStatus = false;
-  statusChanged = false;
-}
-
-void avoidManeuver() {
-  if(obstacleStatus) {
-    obstacleStatusTicker += 1;
-    obstacleStatus = false;
-    /*Serial.print("AvoidManeuver - Object distance is ");
-    Serial.print(distanceSensor);
-    Serial.println(" cm");
-    Serial.print(obstacleStatusTicker);
-    Serial.println(" ticks since object was sighted");
-    Serial.flush();*/
-    LEDrobotStop();
-    LEDrobotStopAlert();
-    wheelRobotTurnOnSpot(true);
-  } else {
-    obstacleStatusTicker = 0;
-    avoidStatus = false;
-    driveStatus = true;
   }
 }
 
 void drive() {
-  if(driveStatus) {
-    if(stance.leftTurn = true) {
+  /* TRACK driving */
+  if(stance.driveTrack) {       
+    if(stance.leftTrackTurn) {
       LEDrobotLeft();
       wheelRobotTurnLeft();
-    } else if (stance.rightTurn = true) {
+    } else if (stance.rightTrackTurn) {
       LEDrobotRight();
       wheelRobotTurnRight();
     } else {
-      switch(trackSensor) {
-        case 0:
-        LEDrobotForward();
-        wheelRobotForward();
-        break;
-        case 3:
-        LEDrobotStop();
-        wheelRobotStop();
-        break;
-      }
+      LEDrobotForward();
+      wheelRobotForward();
     }
+  /* AVOID driving */
+  } else if(stance.avoidObject) {
+    if(stance.avoidTicks < 2) {
+      LEDrobotAvoid();
+      wheelRobotTurnRight();
+    } else {
+      LEDrobotAvoid();
+      wheelRobotTurnLeft();
+    }
+    stance.avoidTicks += 1;
+  } else if(stance.objectDetected) {
+    LEDrobotObstacle();
+    wheelRobotStop();
+  } else {
+    zSetAllLed(40,40,40);
   }
 }
 
-void avoidInit() {
-  Serial.print("AvoidInit - Object distance is ");
-  Serial.print(distanceSensor);
-  Serial.println(" cm");
-  Serial.flush();
-  obstacleStatus = false;
-  avoidStatus = true;
-  LEDrobotStop();
-  wheelRobotStop();
-}
-
-void mainloop() {
-  if (benchmark) currentTick = xTaskGetTickCount();
-
-  getSensorStatus();
-  if (avoidStatus) avoidManeuver();
-  else if (obstacleStatus) avoidInit();
-  else drive();
-  resetSensorStatus();
-
-  if (benchmark) {
-    Serial.print("Benchmark: ");
-    Serial.flush();
-    Serial.println(xTaskGetTickCount() - currentTick);
-    Serial.flush();
-    benchmark = 0;
-  }
-}

@@ -1,19 +1,14 @@
 #include "src/kaulab.h"
 #include "src/main.h"
 
-
-
 void setup() {
-  // put your setup code here, to run once:
+  // Usinng Kaulab.h då set up real time schuduling of tasks.
   zInitialize();
-  zScheduleTask(getSensorStatus, 6, 2);
-  zScheduleTask(drive, 6, 2);
-  zScheduleTask(avoidManeuver, 20, 5);
+  zScheduleTask(getSensorStatus, 5, 2);
+  zScheduleTask(drive, 10, 4);
   zStart();
 }
-/*
 
-*/
+// Schuduling and running of taskes is managed by kaulab.h which is started in setup().
 void loop() {
-  
 }

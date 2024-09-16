@@ -1,5 +1,5 @@
-int speed = 60;
-int turnspeed = speed*0.59;
+int speed = 120;
+int turnspeed = speed*0.3; 
 // diameter on turn is 59cm
 // Space between wheels is 15cm
 // outer wheel is (59/2)+7.5cm from center = 37 cm
@@ -12,8 +12,8 @@ int turnspeed = speed*0.59;
 // Motor 1 = right wheel, Motor 2 = left wheel
 
 void wheelRobotForward() {
-    zRobotSetMotorSpeed(1, -speed);
-    zRobotSetMotorSpeed(2, speed);
+    zRobotSetMotorSpeed(1, -speed/2);
+    zRobotSetMotorSpeed(2, speed/2);
 }
 
 void wheelRobotStop() {
