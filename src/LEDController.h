@@ -15,22 +15,6 @@ void LEDrobotForward() {
     zLedRing.show();
 }
 
-void LEDrobotStop() {
-    turnOfAllLEDs();
-    zSetOneLed(nextLEDtoGlow, LEDinstensity, 0, 0);
-    zLedRing.show();
-    if (nextLEDtoGlow < 11) { nextLEDtoGlow += + 1; }
-    else { nextLEDtoGlow = 0; }
-}
-
-void LEDrobotStopAlert() {
-    turnOfAllLEDs();
-    zSetOneLed(nextLEDtoGlow, 0, LEDinstensity, LEDinstensity);
-    zLedRing.show();
-    if (nextLEDtoGlow < 11) { nextLEDtoGlow += + 1; }
-    else { nextLEDtoGlow = 0; }
-}
-
 void LEDrobotRight() {
     turnOfAllLEDs();
     zLedRing.setColorAt(4, 0, LEDinstensity, 0);
@@ -45,4 +29,28 @@ void LEDrobotLeft() {
     zLedRing.setColorAt(11, 0, LEDinstensity, 0);
     zLedRing.setColorAt(0, 0, LEDinstensity, 0);
     zLedRing.show();
+}
+
+void LEDrobotStop() {
+    turnOfAllLEDs();
+    zSetOneLed(nextLEDtoGlow, LEDinstensity, 0, 0);
+    zLedRing.show();
+    if (nextLEDtoGlow < 11) { nextLEDtoGlow += + 1; }
+    else { nextLEDtoGlow = 0; }
+}
+
+void LEDrobotObstacle() {
+    turnOfAllLEDs();
+    zSetOneLed(nextLEDtoGlow, LEDinstensity, 0, 0);
+    zLedRing.show();
+    if (nextLEDtoGlow < 11) { nextLEDtoGlow += + 1; }
+    else { nextLEDtoGlow = 0; }
+}
+
+void LEDrobotAvoid() {
+    turnOfAllLEDs();
+    zSetOneLed(nextLEDtoGlow, 0, LEDinstensity, LEDinstensity);
+    zLedRing.show();
+    if (nextLEDtoGlow < 11) { nextLEDtoGlow += + 1; }
+    else { nextLEDtoGlow = 0; }
 }
