@@ -10,7 +10,7 @@ typedef struct DrivingStance {
   bool objectDetected;
   bool driveTrack;
   /*Test*/
-  int avoidState;        // Nya variabler för tillståndshantering
+  int avoidState;        
   int rightTurnTicks;    // Hur mycket roboten har svängt höger
   int leftTurnTicks;     // Hur mycket roboten har svängt tillbaka vänster
 } DrivningStance;
@@ -21,7 +21,7 @@ typedef struct DrivingStance {
 int distanceSensor;
 int trackSensor;      // 0 = black line, 1 = black line left, 2 = black line right 3 = white area
 
-void driveTrack();
+void driveInTrack();
 void avoidObstacle();
 
 DrivingStance stance = { false, false, false, 0, false, true };
@@ -55,20 +55,10 @@ void getSensorStatus() {
 void drive() {
   if(stance.driveTrack) 
   {       
-    if(stance.leftTrackTurn) 
-    {
-      LEDrobotLeft();
-      wheelRobotTurnLeft();
-    } else if (stance.rightTrackTurn) 
-    {
-      LEDrobotRight();
-      wheelRobotTurnRight();
-    } else {
-      LEDrobotForward();
-      wheelRobotForward();
-    }
+    driveInTrack();
   } else if(stance.avoidObject) 
   {
+    stance.avoidTicks = 0;
     avoidObstacle();  
   } else if(stance.objectDetected) 
   {
@@ -77,37 +67,20 @@ void drive() {
   } else {
     zSetAllLed(40, 40, 40);  // Standard LED om inget annat
   }
-  /*
-  /* TRACK driving 
-  if(stance.driveTrack) 
-  {  
-    driveTrack();
-  /* AVOID driving 
-  } else if(stance.avoidObject) 
-  {
-    avoidObstacle();
-
-  } else if(stance.objectDetected) 
-  {
-    LEDrobotObstacle();
-    wheelRobotStop();
-  } else 
-  {
-    zSetAllLed(40,40,40);
-  }*/
 }
 
-void driveTrack() 
+void driveInTrack() 
 {
-  if(stance.leftTrackTurn) 
+  if (stance.leftTrackTurn) 
   {
     LEDrobotLeft();
     wheelRobotTurnLeft();
-  } else if(stance.rightTrackTurn) 
+  } else if (stance.rightTrackTurn) 
   {
     LEDrobotRight();
     wheelRobotTurnRight();
-  } else {
+  } else 
+  {
     LEDrobotForward();
     wheelRobotForward();
   }
@@ -115,8 +88,36 @@ void driveTrack()
 
 void avoidObstacle() 
 {
-  switch (stance.avoidState) {
-    case 0: 
+
+    /*if(stance.avoidTicks == 0) {
+    // Sväng höger för att börja undvika hindret
+    //LEDrobotAvoid();
+    LEDrobotRight();
+    wheelRobotTurnRight();
+  } else if(stance.avoidTicks < 3) {
+    // Kör framåt lite
+    //LEDrobotAvoid();
+    LEDrobotForward();
+    wheelRobotForward();
+  } else if(stance.avoidTicks < 5)  {
+    // Sväng vänster för att återgå till linjen
+    //LEDrobotAvoid();
+    LEDrobotLeft();
+    wheelRobotTurnLeft();
+  } else if (stance.avoidTicks >= 5) {
+    // Hindret undveks, återgå till linjeföljning
+    stance.avoidObject = false;
+    stance.objectDetected = false; 
+    stance.driveTrack = true;
+    stance.avoidTicks = 0; // Nollställ undvikningssteget
+    return;
+  }
+  stance.avoidTicks += 1;
+}*/
+    switch (stance.avoidState)
+    {
+      case 0: 
+    //if (stance.rightTurnTicks == 0)
       if (distanceSensor < 40) 
       {
         wheelRobotTurnRight();  
@@ -125,20 +126,20 @@ void avoidObstacle()
         stance.rightTurnTicks++; 
       } else 
       {
-        stance.avoidState = 1; 
         stance.avoidTicks = 0;  // Nollställ för kör framåt
+        stance.avoidState = 1; 
       }
       break;
       
     case 1: // Kör rakt fram en liten stund
-      if (stance.avoidTicks < 6) 
+      if (stance.avoidTicks < 3) 
       {  
         wheelRobotForward();
         stance.avoidTicks++;
       } else 
       {
-        stance.avoidState = 2; 
         stance.leftTurnTicks = 0; 
+        stance.avoidState = 2; 
       }
       break;
       
@@ -160,17 +161,9 @@ void avoidObstacle()
       stance.avoidState = 0;     
       stance.rightTurnTicks = 0; 
       stance.leftTurnTicks = 0;
+      LEDrobotAvoid();
+      wheelRobotStop();
+      //zBlockingDelay(50);
       break;
-  }
-  /*
-  if(stance.avoidTicks < 2) 
-  {
-    LEDrobotAvoid();
-    wheelRobotTurnRight();
-  } else {
-    LEDrobotAvoid();
-    wheelRobotTurnLeft();
-  }
-  stance.avoidTicks += 1;*/
+    }
 }
-
