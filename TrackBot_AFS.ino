@@ -5,7 +5,7 @@ void setup() {
   // Usinng Kaulab.h då set up real time schuduling of tasks.
   robotSetup();
   zInitialize();
-  zScheduleTask(getSensorStatus, 7, 2);
+  zScheduleTask(setRobotStance, 7, 2);
   zScheduleTask(drive, 7, 3);
   zStart();
 }
