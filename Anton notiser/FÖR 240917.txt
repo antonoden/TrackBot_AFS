@@ -1,0 +1,71 @@
+Terminlogi och DIagram:
+
+Schemaläggning 1:
+Shcemaläggningsprotkoll. 
+Hur mter man schemläggninsmöjlighet. 
+
+Roboten kör shortest job first
+
+när ett shcemat är shemaläggninsbart det "feasible". 
+
+en upsättning tasks är schemaläggningsbart ifall de finns något alrogotihm som gör detta möjligt. 
+
+rstriktioner:
+tidsrestrik, körtid, deadlines, etc 
+beroenderestrik, en task kan inte köras innan en annan task är färdig. 
+resursrestrik, begränsning i tasks att de måste dela en gemensam resurs. 
+
+EN hård deadline har ett fel som skapar ett systemstopp. 
+
+en firm deadline gör att de kan bli fel på en del av systemet men den delen av systemet är inte jättekrisitkst
+
+en mjuk deadline är en 
+
+Tenta: Kommer bli en kort tenta. Brukar vara 70% som blir godkända. 
+
+Arduiono kommer på tentan. 
+De som vi gjort på labben kommer komma på tentan. 
+
+Restiktioner:
+Starttid, sluttest. 
+
+Worst case responstime är en bra indikation på om ett shema r schemaläggingsbart. 
+
+Hans har jobbat i industri och ska tillbaka till universitet. Han blir en ny handledare. 
+
+ifall två processer vill komma åt samma resurs samtidigt. Så skapas semsforer. Alltså ett lås. 
+HAde varit bra at ha med labben. Men hans aldrig på med. 
+
+När kommer infoträffen om att söka kurser till våren. Det kommer. De kommer en hemlig kurs. 
+Ha koll på anslagen. 
+
+En till föreläsning kommer ställas in. Några kommer bli inbjudna till ett företagsevent istället för föreläsning.... 
+
+Kaptiler två innehåller mer informatin om detta. 
+
+************ END FÖR 1 *********************
+
+**********S START FÖR 2 ******************'
+
+Periodiska processer. 
+
+en aperiodisk process är en process som kan köras när som helst. 
+aperiodiska system är mer avancerade att beräknas. 
+
+processor är oberoende av varandra. när processor är beroende av varandra så kan inte systeme
+kallar periodiskt längre. Då är det aperiodisk. 
+
+Addera alla exekuveringstider delat på perioden av alla processer. 
+
+timeline schuedlung 
+Enkelt
+
+nackdel med TS är dominoeffekten. 
+
+RATEmonotontic är en annan shcmealäggningsalgorotmm
+
+************ END FÖR 2 ***************************************
+
+
+
+

@@ -1,0 +1,125 @@
+Periodisk schemaläggning: 
+* C_i är worst case exekveringstid. 
+* D_i är relativ deadline. Lite osäker på vad den är
+relativ emot. 
+* T_i är perioden som processen ska bli klar inom. 
+*Processer är oberoende av varandra. 
+* Inga minnerestriktioner
+
+Processanvändingsfaktor betecknas U
+U = (Summan av alla processer) C_i / T_i
+
+Timeline Scheduling:
+Dela in tiden i timeslots. 
+
+FÖrdelar med TS:
+* Enkel att beräkna
+* Enkel att försstå
+* Enkel att implementera
+Nackdelar med TS:
+* Problem när system blir överbelastat, dominoeffekt
+* Svårt att inegrear med icke periodiska processer
+* FÖrändirngar i program blir komplexa (varför?)
+
+Rate Monotonic (RM)
+Preempting betyder att en process kan pausas när 
+en process med högre prioritet kommer in. 
+RM -> kortast period har högst prioritet
+
+Ett test för att se att något går att shchemalägga 
+med Rate Monotonic. Beräkan U och U_i för alla Tasks .
+U(n) = n(2^(1/n)-1)
+U_i = C_i / T_i
+
+Om U_i < U(n) så går det att shemalägga. 
+Om U_i > 1 så går det INTE att shemalägga.
+Om U(n) < U_i < 1 så är schemaläggningen osäker
+
+DÅ behövs ett andra test
+R_o = exekveringstiden för alla processer med högre 
+prioriter än den processen vi vill beräkna responstiden på
+
+RM krav på processerna:
+* Alla processer periodiska
+* COntect switch får inte ta tid.  (vad är conext switch?)
+* Processer exekvera direkt. Avslutas direkt. 
+* Inga interaktioner mellan processer
+* Deadline = slutet på period.
+* Peeemting tillåtet (alltså pausande av process)
+* En process prioritet är statisk. 
+
+Wikipedia säger:
+Rate monotonic scheduling (RMS) är använt i RTOS 
+(real-time operating systems).
+
+Ovan beskrivning är en "simple version" enligt wiki. 
+
+När ett system har mer än 10 processen kan den antas att
+ett RMS system är shemaläggningbart ifall CPU utilization
+är 70%. 
+
+Earlist Deadline First:
+En EDF-schemaläggning är dynamisk till skillnad
+mot Rate Monotonic schemaläggning. Ger en högre komplexitet
+Gör att shchemaläggningsalgorithmen tar upp mer tid. 
+
+VId varje tidpunkt så körs den processen som har närmast
+till sin deadline. Kommer det in nya processer så kommer
+den processen ifall den har närmare till sin deadline köras
+
+* VId varje tidstick så kommer prioritetskön sorteras. eller
+när varje ny process inkommer. 
+
+DM - Deadline monotonic: 
+Används ganska ofta inom real time system. 
+Använder en deadline istället för perioder. 
+Skillnaden mot EDF är att EDF kör på absolut deadline
+och DM kör på relativ deadline. 
+DM är statisk till skillnad mot EDF. 
+Står mer i kapitel 4 i boken. 
+
+First-Come First-Serve (FCFS) = FIFO
+
+Shortest Job First (SJF):
+* Kortaste processen körs först
+* Inget pausande av andra processer
+* Ignorerar deadlines och perioder. Fungerar inte så bra i real-tids scenario
+
+Round-Robin: (RR):
+Processer byter av varandra vid ett visst intervall. 
+Real-tids system så är Round Robin ganska vanligt. Varför??? 
+Bytet förs via preeemption. 
+Ignorerar deadlines och perioder. 
+
+Hur ser det ut i ett riktigt RTOS?:
+Kommer längre fram hur RTOS används i nätverk. 
+
+FreeRTOS, WxWorks och LyncOS är tre bjässar. 
+Den använder sig av Round Robin med högst prioritet. 
+Lätt att uttöka ovanstående med schemaläggare som
+EDF och Rate Monotonic. 
+
+Hur ser det ut i Linux? 
+Preeemptible Kernel kan slås på när man installerar kärnan. 
+GÅr att slå på vid kompilering. Mjuk deadline. 
+
+Patcher finns för Linux som heter "PREEEMPT_RT"
+* Körs RR mellan tasks med har inställning för FIFO. 
+Rätt så vanligt att köra ovanstående i verklkigheter. 
+Fungerar bra för firm deadlines och soft deadlines. 
+Men har deadlines fungerar det inte så bra för där ett riskitgt
+Real time system fungerar. 
+
+Läs boken Hard real-time computing kapitel 4:
+HAndlar om FDF - First deadline First
+RM - Rate Monotonic
+RM deadline - Rate monotonic deadline
+
+Jämför FDF och RM i slutet och säger att FDF använder
+processorns kraft bättre än RM. RM kan garantera 69% 
+anvdnänding men statisiskt sett 88%. 
+FDF kan använda upp till 100% 
+FDF är även dynamiskt i att den kan hantera aperiodiska 
+processer och utöka sina perioder ifall den störer på
+overload i sina processer .
+
