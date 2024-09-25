@@ -1,19 +1,24 @@
-#include "wheelController.h"
-#include "LEDController.h"
-#include "soundController.h"
-
 typedef struct DrivingStance {
+  bool clockwise;             // value to know if robot is driving clockwise or not. Good to know when avoiding object. 
+  bool isClockwiseCalculated; // starts as false but is set to true after first loop. 
   bool rightTrackTurn; 
   bool leftTrackTurn; 
   bool avoidObject;
   int avoidTicks;
   bool objectDetected;
   bool driveTrack;
+  bool outOfLineTicks;    // hur många ticks har roboten varit borta från linjen. 
   /*Test*/
-  int avoidState;        
-  int rightTurnTicks;    // Hur mycket roboten har svängt höger
-  int leftTurnTicks;     // Hur mycket roboten har svängt tillbaka vänster
+  int avoidState;        // value used to set what state in the avoid function we are.
+  int rightTurnTicks;    // value used in both calc. clockwise and in avoidfunction
+  int leftTurnTicks;     // value used in both calc. clockwise and in avoidfunction
 } DrivningStance;
+
+DrivingStance stance = { };
+
+#include "wheelController.h"
+#include "LEDController.h"
+#include "soundController.h"
 
 /* Variables not in use */
 
@@ -24,21 +29,39 @@ int trackSensor;      // 0 = black line, 1 = black line left, 2 = black line rig
 void driveInTrack();
 void avoidObstacle();
 
-DrivingStance stance = { false, false, false, 0, false, true };
+/*DrivingStance stance = { false, false, false, false, false, false, true, 0, 0, 0, 0 };*/
+
+void robotSetup() {
+  stance.clockwise = false;              
+  stance.isClockwiseCalculated = false; 
+  stance.rightTrackTurn = false; 
+  stance.leftTrackTurn = false; 
+  stance.avoidObject = false;
+  stance.avoidTicks = 0;
+  stance.objectDetected = false;
+  stance.driveTrack = true;
+  stance.avoidState = 0;             
+  stance.rightTurnTicks = 0;          
+  stance.leftTurnTicks = 0;         
+  stance.outOfLineTicks = 0;
+}
 
 void getSensorStatus() {
   distanceSensor = zRobotGetUltraSensor();
   trackSensor = zRobotGetLineSensor();
 
-  if (distanceSensor < 40) {
-    stance.objectDetected = true;
+  if (distanceSensor < 25) {
     stance.avoidObject = true;
+    stance.objectDetected = true;
     stance.driveTrack = false;
+  } else {
+    stance.objectDetected = false;
   }
   switch (trackSensor) {
     case 0: // black
         stance.leftTrackTurn = false;
         stance.rightTrackTurn = false;
+        stance.outOfLineTicks = 0;
         break;
     case 1: // turn left
         stance.leftTrackTurn = true;
@@ -47,122 +70,108 @@ void getSensorStatus() {
         stance.rightTrackTurn = true;
         break;
     case 3: // out of line
-        
+        if(stance.outOfLineTicks > 2) {
+          if(stance.isClockwiseCalculated) {
+            if(stance.outOfLineTicks < 7) {
+              if(stance.clockwise) 
+                stance.leftTrackTurn = true;
+              else 
+                stance.rightTrackTurn = true;
+            } else {
+              if(stance.clockwise)
+                stance.rightTrackTurn = true; 
+              else 
+                stance.leftTrackTurn = true;
+            }
+          }
+        }
+        stance.outOfLineTicks++;
         break;
   }
 }
 
-void drive() {
-  if(stance.driveTrack) 
-  {       
+void drive()  {
+  if(stance.driveTrack)  
     driveInTrack();
-  } else if(stance.avoidObject) 
-  {
-    
+  else if(stance.avoidObject) 
     avoidObstacle();  
-  } else if(stance.objectDetected) 
-  {
-    LEDrobotObstacle();
-    wheelRobotStop();
-  } else {
+  else 
     zSetAllLed(40, 40, 40);  // Standard LED om inget annat
-  }
+}
+
+void calculateClockwise() {
+  if(stance.leftTurnTicks > stance.rightTurnTicks) {
+      stance.clockwise = false;
+    } else {
+      stance.clockwise = true;
+    }
+    stance.isClockwiseCalculated = true;
+    stance.leftTurnTicks = 0;
+    stance.rightTurnTicks = 0;
 }
 
 void driveInTrack() 
 {
-  if (stance.leftTrackTurn) 
-  {
+  if (stance.leftTrackTurn) {
     LEDrobotLeft();
     wheelRobotTurnLeft();
-  } else if (stance.rightTrackTurn) 
-  {
+    if(!stance.isClockwiseCalculated) stance.leftTurnTicks++; 
+  } else if (stance.rightTrackTurn) {
     LEDrobotRight();
     wheelRobotTurnRight();
-  } else 
-  {
+    if(!stance.isClockwiseCalculated) stance.rightTurnTicks++;
+  } else {
     LEDrobotForward();
     wheelRobotForward();
+  }
+  if(!stance.isClockwiseCalculated) {
+    if(stance.leftTurnTicks || stance.rightTurnTicks > 3) {
+      calculateClockwise();
+    }
   }
 }
 
 void avoidObstacle() 
 {
-
-    /*if(stance.avoidTicks == 0) {
-    // Sväng höger för att börja undvika hindret
-    //LEDrobotAvoid();
-    LEDrobotRight();
-    wheelRobotTurnRight();
-  } else if(stance.avoidTicks < 3) {
-    // Kör framåt lite
-    //LEDrobotAvoid();
-    LEDrobotForward();
-    wheelRobotForward();
-  } else if(stance.avoidTicks < 5)  {
-    // Sväng vänster för att återgå till linjen
-    //LEDrobotAvoid();
-    LEDrobotLeft();
-    wheelRobotTurnLeft();
-  } else if (stance.avoidTicks >= 5) {
-    // Hindret undveks, återgå till linjeföljning
-    stance.avoidObject = false;
-    stance.objectDetected = false; 
-    stance.driveTrack = true;
-    stance.avoidTicks = 0; // Nollställ undvikningssteget
-    return;
-  }
-  stance.avoidTicks += 1;
-}*/
-    switch (stance.avoidState)
-    {
+    switch (stance.avoidState) {
       case 0: 
-    //if (stance.rightTurnTicks == 0)
-      if (distanceSensor < 40) 
-      {
-        //wheelRobotTurnRight();  
-        LEDrobotRight();
-        //LEDrobotAvoid();
-        stance.rightTurnTicks++; 
-      } else 
-      {
+        if (stance.rightTurnTicks < 3 && stance.leftTurnTicks < 3) {
+          if(stance.clockwise) {
+            wheelRobotTurnRight();  
+            LEDrobotRight();
+            stance.rightTurnTicks++;
+          } else {
+            wheelRobotTurnLeft();  
+            LEDrobotLeft();
+            stance.leftTurnTicks++;
+          }
+      } else {
         stance.avoidTicks = 0;  // Nollställ för kör framåt
         stance.avoidState = 1; 
       }
       break;
       
     case 1: // Kör rakt fram en liten stund
-      if (stance.avoidTicks < 3) 
-      {  
-        //wheelRobotForward();
+      if (stance.avoidTicks < 3) {  
+        wheelRobotForward();
         LEDrobotForward();
         stance.avoidTicks++;
-        Serial.print("case 1 -> if");
-        Serial.println(stance.avoidTicks);
-        Serial.flush();
-      } else 
-      {
-        Serial.println("case 1 -> else");
-        Serial.flush();
-        stance.leftTurnTicks = 0; 
+      } else
         stance.avoidState = 2; 
-      }
       break;
       
     case 2: // Sväng vänster lika mycket som höger
-      if (stance.leftTurnTicks < stance.rightTurnTicks) 
-      {
-        //wheelRobotTurnLeft(); 
-        //LEDrobotAvoid();
+      if(stance.clockwise) {
+        wheelRobotTurnLeft();  
         LEDrobotLeft();
-        stance.leftTurnTicks++; 
-        Serial.print("case 2 -> if");
-        Serial.println(stance.avoidTicks);
+        stance.leftTurnTicks++;
       } else {
-        stance.avoidState = 3;  
-        Serial.print("case 2 -> if");
-        Serial.println(stance.avoidTicks);
+        wheelRobotTurnRight();  
+        LEDrobotRight();
+        stance.rightTurnTicks++;
       }
+      if (stance.leftTurnTicks == stance.rightTurnTicks) 
+        stance.avoidState = 3;
       break;
       
     case 3: 
@@ -172,9 +181,6 @@ void avoidObstacle()
       stance.avoidState = 0;     
       stance.rightTurnTicks = 0; 
       stance.leftTurnTicks = 0;
-      //LEDrobotAvoid();
-      //wheelRobotStop();
-      //zBlockingDelay(50);
       break;
     }
 }

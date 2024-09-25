@@ -9,25 +9,44 @@ void turnOfAllLEDs() {
 
 void LEDrobotForward() {
     turnOfAllLEDs();
-    zLedRing.setColorAt(1, 0, LEDinstensity, 0);
-    zLedRing.setColorAt(2, 0, LEDinstensity, 0);
-    zLedRing.setColorAt(3, 0, LEDinstensity, 0);
+    if(stance.avoidObject) {
+        zLedRing.setColorAt(1, LEDinstensity, 0, 0);
+        zLedRing.setColorAt(2, LEDinstensity, 0, 0);
+        zLedRing.setColorAt(3, LEDinstensity, 0, 0);
+    } else {
+        zLedRing.setColorAt(1, 0, LEDinstensity, 0);
+        zLedRing.setColorAt(2, 0, LEDinstensity, 0);
+        zLedRing.setColorAt(3, 0, LEDinstensity, 0);
+    }
     zLedRing.show();
 }
 
 void LEDrobotRight() {
     turnOfAllLEDs();
-    zLedRing.setColorAt(4, 0, LEDinstensity, 0);
-    zLedRing.setColorAt(5, 0, LEDinstensity, 0);
-    zLedRing.setColorAt(6, 0, LEDinstensity, 0);
+    if(stance.avoidObject) {
+        zLedRing.setColorAt(4, LEDinstensity, 0, 0);
+        zLedRing.setColorAt(5, LEDinstensity, 0, 0);
+        zLedRing.setColorAt(6, LEDinstensity, 0, 0);
+    } else {
+        zLedRing.setColorAt(4, 0, LEDinstensity, 0);
+        zLedRing.setColorAt(5, 0, LEDinstensity, 0);
+        zLedRing.setColorAt(6, 0, LEDinstensity, 0);
+    }
     zLedRing.show();
 }
 
 void LEDrobotLeft() {
     turnOfAllLEDs();
-    zLedRing.setColorAt(10, 0, LEDinstensity, 0);
-    zLedRing.setColorAt(11, 0, LEDinstensity, 0);
-    zLedRing.setColorAt(0, 0, LEDinstensity, 0);
+    if(stance.avoidObject) {
+        zLedRing.setColorAt(10, LEDinstensity, 0, 0);
+        zLedRing.setColorAt(11, LEDinstensity, 0, 0);
+        zLedRing.setColorAt(0, LEDinstensity, 0, 0);
+    } else {
+        zLedRing.setColorAt(10, 0, LEDinstensity, 0);
+        zLedRing.setColorAt(11, 0, LEDinstensity, 0);
+        zLedRing.setColorAt(0, 0, LEDinstensity, 0);
+    }
+    
     zLedRing.show();
 }
 
