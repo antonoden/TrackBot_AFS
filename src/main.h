@@ -58,7 +58,7 @@ void drive() {
     driveInTrack();
   } else if(stance.avoidObject) 
   {
-    stance.avoidTicks = 0;
+    
     avoidObstacle();  
   } else if(stance.objectDetected) 
   {
@@ -120,7 +120,7 @@ void avoidObstacle()
     //if (stance.rightTurnTicks == 0)
       if (distanceSensor < 40) 
       {
-        wheelRobotTurnRight();  
+        //wheelRobotTurnRight();  
         LEDrobotRight();
         //LEDrobotAvoid();
         stance.rightTurnTicks++; 
@@ -134,10 +134,16 @@ void avoidObstacle()
     case 1: // Kör rakt fram en liten stund
       if (stance.avoidTicks < 3) 
       {  
-        wheelRobotForward();
+        //wheelRobotForward();
+        LEDrobotForward();
         stance.avoidTicks++;
+        Serial.print("case 1 -> if");
+        Serial.println(stance.avoidTicks);
+        Serial.flush();
       } else 
       {
+        Serial.println("case 1 -> else");
+        Serial.flush();
         stance.leftTurnTicks = 0; 
         stance.avoidState = 2; 
       }
@@ -146,23 +152,28 @@ void avoidObstacle()
     case 2: // Sväng vänster lika mycket som höger
       if (stance.leftTurnTicks < stance.rightTurnTicks) 
       {
-        wheelRobotTurnLeft(); 
+        //wheelRobotTurnLeft(); 
         //LEDrobotAvoid();
         LEDrobotLeft();
         stance.leftTurnTicks++; 
+        Serial.print("case 2 -> if");
+        Serial.println(stance.avoidTicks);
       } else {
         stance.avoidState = 3;  
+        Serial.print("case 2 -> if");
+        Serial.println(stance.avoidTicks);
       }
       break;
       
     case 3: 
+      Serial.print("case 3");
       stance.avoidObject = false;
       stance.driveTrack = true;  
       stance.avoidState = 0;     
       stance.rightTurnTicks = 0; 
       stance.leftTurnTicks = 0;
-      LEDrobotAvoid();
-      wheelRobotStop();
+      //LEDrobotAvoid();
+      //wheelRobotStop();
       //zBlockingDelay(50);
       break;
     }
