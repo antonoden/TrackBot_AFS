@@ -1,4 +1,4 @@
-/* This file is a copy from a KAU repository on github*/
+/* This file is a copy from a KAU repository called kaulab.h controlled by git*/
 
 #include "MeAuriga.h"
 #include "Arduino_FreeRTOS.h"

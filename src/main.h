@@ -14,17 +14,17 @@ typedef struct DrivingStance {
   int leftTurnTicks;     // value used in both calc. clockwise and in avoidfunction
 } DrivningStance;
 
+typedef struct Sensor {
+  int distance;
+  int track;      // 0 = black line, 1 = black line left, 2 = black line right 3 = white area
+} Sensor;
+
 DrivingStance stance = { };
+Sensor sensor = { };
 
 #include "wheelController.h"
 #include "LEDController.h"
 #include "soundController.h"
-
-/* Variables not in use */
-
-/* Variables in use */
-int distanceSensor;
-int trackSensor;      // 0 = black line, 1 = black line left, 2 = black line right 3 = white area
 
 void driveInTrack();
 void avoidObstacle();
@@ -32,7 +32,9 @@ void setSensorStatus();
 void setSurroundingStance();
 void setTrackingStance();
 
-/*DrivingStance stance = { false, false, false, false, false, false, true, 0, 0, 0, 0 };*/
+/* 
+  Robot setup function
+*/
 
 void robotSetup() {
   stance.clockwise = false;              
@@ -49,21 +51,16 @@ void robotSetup() {
   stance.outOfLineTicks = 0;
 }
 
+/*
+  ROBOT Stance and sensor functions
+*/
+
 void setRobotStance() {
   setSensorStatus();
 
   setSurroundingStance();
 
   setTrackingStance();
-}
-
-void drive()  {
-  if(stance.driveTrack)  
-    driveInTrack();
-  else if(stance.avoidObject) 
-    avoidObstacle();  
-  else 
-    zSetAllLed(40, 40, 40);  // Standard LED om inget annat
 }
 
 void calculateClockwise() {
@@ -78,12 +75,12 @@ void calculateClockwise() {
 }
 
 void setSensorStatus() {
-  distanceSensor = zRobotGetUltraSensor();
-  trackSensor = zRobotGetLineSensor();
+  sensor.distance = zRobotGetUltraSensor();
+  sensor.track =  zRobotGetLineSensor();
 }
 
 void setSurroundingStance() {
-  if (distanceSensor < 25) {
+  if (sensor.distance < 25) {
     stance.avoidObject = true;
     stance.objectDetected = true;
     stance.driveTrack = false;
@@ -93,7 +90,7 @@ void setSurroundingStance() {
 }
 
 void setTrackingStance() {
-  switch (trackSensor) {
+  switch (sensor.track) {
     case 0: // black
         stance.leftTrackTurn = false;
         stance.rightTrackTurn = false;
@@ -124,6 +121,19 @@ void setTrackingStance() {
         stance.outOfLineTicks++;
         break;
   }
+}
+
+/*
+  ROBOT action functions
+*/
+
+void drive()  {
+  if(stance.driveTrack)  
+    driveInTrack();
+  else if(stance.avoidObject) 
+    avoidObstacle();  
+  else 
+    zSetAllLed(40, 40, 40);  // Standard LED om inget annat
 }
 
 void driveInTrack() 
@@ -186,12 +196,13 @@ void avoidObstacle()
         LEDrobotRight();
         stance.rightTurnTicks++;
       }
-      if (stance.leftTurnTicks == stance.rightTurnTicks) 
+      if (stance.leftTurnTicks == stance.rightTurnTicks) {
         stance.avoidState = 3;
+        stance.avoidTicks = 0;
+      }
       break;
-      
+
     case 3: 
-      Serial.print("case 3");
       stance.avoidObject = false;
       stance.driveTrack = true;  
       stance.avoidState = 0;     
@@ -200,3 +211,20 @@ void avoidObstacle()
       break;
     }
 }
+
+
+/*
+case 3: // Åk rakt för att komma till linjen igen. 
+      if(stance.avoidTicks < 3 || sensor.track == 3) {
+        wheelRobotForward();
+        LEDrobotForward();
+      } else {
+          if(stance.clockwise) {
+            wheelRobotTurnRight();  
+            LEDrobotRight();
+          } else {
+            wheelRobotTurnLeft();  
+            LEDrobotLeft();
+          }   
+      }
+      break;*/

@@ -12,8 +12,14 @@ int turnspeed = speed*0.3;
 // Motor 1 = right wheel, Motor 2 = left wheel
 
 void wheelRobotForward() {
-    zRobotSetMotorSpeed(1, -speed/2);
-    zRobotSetMotorSpeed(2, speed/2);
+    if(stance.avoidObject) {
+        zRobotSetMotorSpeed(1, -speed/3);
+        zRobotSetMotorSpeed(2, speed/3);
+    } else {
+        zRobotSetMotorSpeed(1, -speed/2);
+        zRobotSetMotorSpeed(2, speed/2);
+    }
+    
 }
 
 void wheelRobotStop() {
