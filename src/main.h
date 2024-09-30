@@ -2,7 +2,8 @@ typedef struct DrivingStance {
   bool clockwise;             // value to know if robot is driving clockwise or not. Good to know when avoiding object. 
   bool isClockwiseCalculated; // starts as false but is set to true after first loop. 
   bool rightTrackTurn; 
-  bool leftTrackTurn; 
+  bool leftTrackTurn;
+  bool reverse; 
   bool avoidObject;
   int avoidTicks;
   bool objectDetected;
@@ -51,6 +52,7 @@ void robotSetup() {
   stance.driveTrack = true;
   stance.avoidState = 0;                     
   stance.outOfLineTicks = 0;
+  stance.reverse = false;
 }
 
 /*
@@ -105,22 +107,10 @@ void setTrackingStance() {
         stance.rightTrackTurn = true;
         break;
     case 3: // out of line
-        if(stance.outOfLineTicks > 2) {
-          if(stance.isClockwiseCalculated) {
-            if(stance.outOfLineTicks < 7) {
-              if(stance.clockwise) 
-                stance.leftTrackTurn = true;
-              else 
-                stance.rightTrackTurn = true;
-            } else {
-              if(stance.clockwise)
-                stance.rightTrackTurn = true; 
-              else 
-                stance.leftTrackTurn = true;
-            }
-          }
-        }
-        stance.outOfLineTicks++;
+        /*
+          stance.reverse = true;
+          stance.leftTrackTurn = false;
+          stance.rightTrackTurn = false;*/
         break;
   }
 }
@@ -148,6 +138,12 @@ void driveInTrack()
     LEDrobotRight();
     wheelRobotTurnRight();
     if(!stance.isClockwiseCalculated) stance.rightTurnTicks++;
+  } else if (stance.reverse) {
+    Serial.println("Reverse 3");
+    Serial.flush();
+    zRobotSetMotorSpeed(1, speed/2);
+    zRobotSetMotorSpeed(2, -speed/2);
+    LEDrobotReverse();
   } else {
     LEDrobotForward();
     wheelRobotForward();
@@ -231,7 +227,7 @@ void avoidWrapUp() {
 }
 
 void avoidForwardLong() {
-    if (stance.avoidTicks < 18) {  
+    if (stance.avoidTicks < 15) {  
     wheelRobotForward();
     LEDrobotForward();
     stance.avoidTicks++;

@@ -21,6 +21,20 @@ void LEDrobotForward() {
     zLedRing.show();
 }
 
+void LEDrobotReverse() {
+    turnOfAllLEDs();
+    if(stance.avoidObject) {
+        zLedRing.setColorAt(7, LEDinstensity, 0, 0);
+        zLedRing.setColorAt(8, LEDinstensity, 0, 0);
+        zLedRing.setColorAt(9, LEDinstensity, 0, 0);
+    } else {
+        zLedRing.setColorAt(7, 0, LEDinstensity, 0);
+        zLedRing.setColorAt(8, 0, LEDinstensity, 0);
+        zLedRing.setColorAt(9, 0, LEDinstensity, 0);
+    }
+    zLedRing.show();
+}
+
 void LEDrobotRight() {
     turnOfAllLEDs();
     if(stance.avoidObject) {
