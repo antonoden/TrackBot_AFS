@@ -290,14 +290,17 @@ void avoidObstacle()
     case 6:
       if(sensor.track == 3) {
         avoidForward(11);
-      } else {
+      } else {        
+        avoidForward(1);
         stance.avoidTicks = 0;
         stance.avoidState++;
       }
       break;
 
     case 7:
-      if(stance.clockwise) {
+      if (stance.avoidTicks == 0) 
+        avoidForward(1);
+      else if (stance.clockwise) {
         avoidRightTurn(1);
       } else {
         avoidLeftTurn(1);
