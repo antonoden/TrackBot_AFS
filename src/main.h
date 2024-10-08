@@ -84,7 +84,7 @@ void setSensorStatus() {
 }
 
 void setSurroundingStance() {
-  if (sensor.distance < 25) {
+  if (sensor.distance < 10) {
     stance.avoidObject = true;
     stance.objectDetected = true;
     stance.driveTrack = false;
@@ -149,7 +149,7 @@ void driveInTrack()
     wheelRobotForward();
   }
   if(!stance.isClockwiseCalculated) {
-    if(stance.leftTurnTicks || stance.rightTurnTicks > 3) {
+    if(stance.leftTurnTicks || stance.rightTurnTicks > 2) {
       calculateClockwise();
     }
   }
@@ -195,21 +195,21 @@ void avoidThirdMove() {
   }
 }
 
-void avoidLeftTurn() {
+void avoidLeftTurn(int timer) {
     wheelRobotTurnLeft();  
     LEDrobotLeft();
     stance.avoidTicks++;
-    if(stance.avoidTicks > 2) {
+    if(stance.avoidTicks > timer) {
       stance.avoidState++;
       stance.avoidTicks = 0;
     }
 }
 
-void avoidRightTurn() {
+void avoidRightTurn(int timer) {
     wheelRobotTurnRight();  
     LEDrobotRight();
     stance.avoidTicks++;
-    if(stance.avoidTicks > 2) {
+    if(stance.avoidTicks > timer) {
       stance.avoidState++;
       stance.avoidTicks = 0;
     }
@@ -226,8 +226,9 @@ void avoidWrapUp() {
     stance.avoidMoveOneTicks = 0;
 }
 
-void avoidForwardLong() {
-    if (stance.avoidTicks < 15) {  
+
+void avoidForward(int timer) {
+  if (stance.avoidTicks < timer) {  
     wheelRobotForward();
     LEDrobotForward();
     stance.avoidTicks++;
@@ -235,13 +236,12 @@ void avoidForwardLong() {
     stance.avoidTicks = 0;
     stance.avoidState++;
   }
-    
 }
 
-void avoidForwardShort() {
-  if (stance.avoidTicks < 11) {  
-    wheelRobotForward();
-    LEDrobotForward();
+void avoidBackward(int timer) {
+  if (stance.avoidTicks < timer) {  
+    wheelRobotbackward();
+    LEDrobotReverse();
     stance.avoidTicks++;
   } else {
     stance.avoidTicks = 0;
@@ -252,56 +252,59 @@ void avoidForwardShort() {
 void avoidObstacle() 
 {
   switch (stance.avoidState) {
-    case 0: // Sväng in i cirkeln
+    case 0:
+      avoidBackward(9);
+      break;
+    case 1: // Sväng in i cirkeln
       if(stance.clockwise) {
-        avoidRightTurn();
+        avoidRightTurn(2);
       } else {
-        avoidLeftTurn();
+        avoidLeftTurn(2);
       }  
       break;
       
-    case 1: // Kör rakt fram en liten stund
-      avoidForwardShort();
+    case 2: // Kör rakt fram en liten stund
+      avoidForward(11);
       break;
       
-    case 2: // Sväng tillbaka till linjen
+    case 3: // Sväng tillbaka till linjen
       if(stance.clockwise) {
-          avoidLeftTurn();
+          avoidLeftTurn(2);
         } else {
-          avoidRightTurn();
+          avoidRightTurn(2);
         }  
       break;
 
-    case 3: 
-      avoidForwardLong();
+    case 4: 
+      avoidForward(18);
       break;
     
-    case 4:
+    case 5:
       if(stance.clockwise) {
-          avoidLeftTurn();
+          avoidLeftTurn(2);
         } else {
-          avoidRightTurn();
+          avoidRightTurn(2);
         }  
       break;
 
-    case 5:
+    case 6:
       if(sensor.track == 3) {
-        avoidForwardShort();
+        avoidForward(11);
       } else {
         stance.avoidTicks = 0;
         stance.avoidState++;
       }
       break;
 
-    case 6:
+    case 7:
       if(stance.clockwise) {
-        avoidRightTurn();
+        avoidRightTurn(1);
       } else {
-        avoidLeftTurn();
+        avoidLeftTurn(1);
       }    
       break;
 
-    case 7:
+    case 8:
       avoidWrapUp();
       break;
   }

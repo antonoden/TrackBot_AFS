@@ -14,11 +14,15 @@ int turnspeed = speed*0.3;
 void wheelRobotForward() {
     if(stance.avoidObject) {
         zRobotSetMotorSpeed(1, -speed/2);
-        zRobotSetMotorSpeed(2, speed/2);
+        zRobotSetMotorSpeed(2, 3 + speed/2);
     } else {
         zRobotSetMotorSpeed(1, -speed/2);
-        zRobotSetMotorSpeed(2, speed/2);
+        zRobotSetMotorSpeed(2, 3 + speed/2);
     }
+}
+void wheelRobotbackward() {    
+    zRobotSetMotorSpeed(1, speed/2);
+    zRobotSetMotorSpeed(2, -3 - speed/2);
 }
 
 void wheelRobotStop() {
@@ -32,7 +36,7 @@ void wheelRobotTurnRight() {
         zRobotSetMotorSpeed(2, speed);
     } else {
         zRobotSetMotorSpeed(1, -turnspeed);
-        zRobotSetMotorSpeed(2, speed);
+        zRobotSetMotorSpeed(2, speed - turnspeed/5);
     }
 }
 
@@ -41,7 +45,7 @@ void wheelRobotTurnLeft() {
         zRobotSetMotorSpeed(1, -speed);
         zRobotSetMotorSpeed(2, -speed);
     } else {
-        zRobotSetMotorSpeed(1, -speed);
+        zRobotSetMotorSpeed(1, -speed + turnspeed/5);
         zRobotSetMotorSpeed(2, turnspeed);
     }
 }
