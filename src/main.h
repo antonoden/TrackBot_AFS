@@ -215,16 +215,35 @@ void avoidObstacle()
       break;
       
     case 2: // Kör rakt fram en liten stund
-      avoidForward(11);
+      avoidForward(15);
       break;
       
     case 3: // sväng tillbaka fr att komma parallelt med linjen
       if(stance.clockwise) {
-          avoidLeftTurn(2);
+          avoidLeftTurn(1);
         } else {
-          avoidRightTurn(2);
+          avoidRightTurn(1);
         }  
       break;
+
+    case 4: // åk i en sväng för att komma tillbaka till linjen
+      int speed = 120;
+      int turnspeed = speed*0.3; 
+      if(sensor.track == 3) {
+        if(stance.clockwise) { // left turn
+          zRobotSetMotorSpeed(1, -speed + turnspeed);
+          zRobotSetMotorSpeed(2, turnspeed);
+          LEDrobotLeft();
+        } else { // right turn
+          zRobotSetMotorSpeed(1, -turnspeed);
+          zRobotSetMotorSpeed(2, speed - turnspeed);
+          LEDrobotRight();
+        }  
+      } else {       
+          stance.avoidTicks = 0;
+          stance.avoidState++;
+      }
+     /*
 
     case 4: // Åk fram så att vi kommer förbi objektet
       avoidForward(18);
@@ -240,7 +259,7 @@ void avoidObstacle()
 
     case 6: // kör framåt tills vi når linjen. 
       if(sensor.track == 3) {
-        avoidForward(11);
+        avoidForward(20);
       } else {       
         stance.avoidTicks = 0;
         stance.avoidState++;
@@ -255,9 +274,9 @@ void avoidObstacle()
       } else {
         avoidLeftTurn(3);
       }    
-      break;
+      break;*/ 
 
-    case 8:
+    case 5:
       avoidWrapUp();
       break;
   }
