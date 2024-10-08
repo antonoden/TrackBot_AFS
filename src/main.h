@@ -202,6 +202,7 @@ void avoidReverse(int timer) {
 
 void avoidObstacle() 
 {
+
   switch (stance.avoidState) {
     case 0: // backa lite så att vi kommer bort från objekt
       avoidReverse(9);
@@ -215,7 +216,7 @@ void avoidObstacle()
       break;
       
     case 2: // Kör rakt fram en liten stund
-      avoidForward(15);
+      avoidForward(11);
       break;
       
     case 3: // sväng tillbaka fr att komma parallelt med linjen
@@ -227,28 +228,45 @@ void avoidObstacle()
       break;
 
     case 4: // åk i en sväng för att komma tillbaka till linjen
+      Serial.println("Case 4");
+      Serial.flush();
       int speed = 120;
       int turnspeed = speed*0.3; 
-      if(sensor.track == 3) {
+      if(sensor.track == 3) { // black line
         if(stance.clockwise) { // left turn
           zRobotSetMotorSpeed(1, -speed + turnspeed);
-          zRobotSetMotorSpeed(2, turnspeed);
+          zRobotSetMotorSpeed(2, turnspeed+10);
           LEDrobotLeft();
         } else { // right turn
-          zRobotSetMotorSpeed(1, -turnspeed);
+          zRobotSetMotorSpeed(1, -turnspeed-10);
           zRobotSetMotorSpeed(2, speed - turnspeed);
           LEDrobotRight();
-        }  
-      } else {       
-          stance.avoidTicks = 0;
-          stance.avoidState++;
+        }   
+      } else { 
+        Serial.println("Case 4 else");
+        Serial.flush();
+        stance.avoidTicks = 0;
+        stance.avoidState = 5;
       }
-     /*
-
-    case 4: // Åk fram så att vi kommer förbi objektet
-      avoidForward(18);
       break;
-    
+     
+
+    case 5: // Gör sista svängen för att komma tillbaka. 
+      Serial.println("Case 5");
+      Serial.flush();
+      if(stance.clockwise) {
+            avoidRightTurn(1);
+      } else {
+            avoidLeftTurn(1);
+      } 
+      break;
+
+    case 6:
+      Serial.println("Case 6");
+      Serial.flush();
+      avoidWrapUp();
+      break;
+    /*
     case 5: // sväng för att komma tilbaka till linjen
       if(stance.clockwise) {
           avoidLeftTurn(2);
@@ -276,8 +294,6 @@ void avoidObstacle()
       }    
       break;*/ 
 
-    case 5:
-      avoidWrapUp();
-      break;
+    
   }
 }
