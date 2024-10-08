@@ -84,7 +84,7 @@ void setSensorStatus() {
 }
 
 void setSurroundingStance() {
-  if (sensor.distance < 10) {
+  if (sensor.distance < 25) {
     stance.avoidObject = true;
     stance.objectDetected = true;
     stance.driveTrack = false;
@@ -149,7 +149,7 @@ void driveInTrack()
     wheelRobotForward();
   }
   if(!stance.isClockwiseCalculated) {
-    if(stance.leftTurnTicks || stance.rightTurnTicks > 2) {
+    if(stance.leftTurnTicks || stance.rightTurnTicks > 3) {
       calculateClockwise();
     }
   }
@@ -195,21 +195,21 @@ void avoidThirdMove() {
   }
 }
 
-void avoidLeftTurn(int timer) {
+void avoidLeftTurn() {
     wheelRobotTurnLeft();  
     LEDrobotLeft();
     stance.avoidTicks++;
-    if(stance.avoidTicks > timer) {
+    if(stance.avoidTicks > 2) {
       stance.avoidState++;
       stance.avoidTicks = 0;
     }
 }
 
-void avoidRightTurn(int timer) {
+void avoidRightTurn() {
     wheelRobotTurnRight();  
     LEDrobotRight();
     stance.avoidTicks++;
-    if(stance.avoidTicks > timer) {
+    if(stance.avoidTicks > 2) {
       stance.avoidState++;
       stance.avoidTicks = 0;
     }
@@ -226,9 +226,8 @@ void avoidWrapUp() {
     stance.avoidMoveOneTicks = 0;
 }
 
-
-void avoidForward(int timer) {
-  if (stance.avoidTicks < timer) {  
+void avoidForwardLong() {
+    if (stance.avoidTicks < 15) {  
     wheelRobotForward();
     LEDrobotForward();
     stance.avoidTicks++;
@@ -236,12 +235,13 @@ void avoidForward(int timer) {
     stance.avoidTicks = 0;
     stance.avoidState++;
   }
+    
 }
 
-void avoidBackward(int timer) {
-  if (stance.avoidTicks < timer) {  
-    wheelRobotbackward();
-    LEDrobotReverse();
+void avoidForwardShort() {
+  if (stance.avoidTicks < 11) {  
+    wheelRobotForward();
+    LEDrobotForward();
     stance.avoidTicks++;
   } else {
     stance.avoidTicks = 0;
@@ -252,59 +252,56 @@ void avoidBackward(int timer) {
 void avoidObstacle() 
 {
   switch (stance.avoidState) {
-    case 0:
-      avoidBackward(9);
-      break;
-    case 1: // Sväng in i cirkeln
+    case 0: // Sväng in i cirkeln
       if(stance.clockwise) {
-        avoidRightTurn(2);
+        avoidRightTurn();
       } else {
-        avoidLeftTurn(2);
+        avoidLeftTurn();
       }  
       break;
       
-    case 2: // Kör rakt fram en liten stund
-      avoidForward(11);
+    case 1: // Kör rakt fram en liten stund
+      avoidForwardShort();
       break;
       
-    case 3: // Sväng tillbaka till linjen
+    case 2: // Sväng tillbaka till linjen
       if(stance.clockwise) {
-          avoidLeftTurn(2);
+          avoidLeftTurn();
         } else {
-          avoidRightTurn(2);
+          avoidRightTurn();
         }  
       break;
 
-    case 4: 
-      avoidForward(18);
+    case 3: 
+      avoidForwardLong();
       break;
     
-    case 5:
+    case 4:
       if(stance.clockwise) {
-          avoidLeftTurn(2);
+          avoidLeftTurn();
         } else {
-          avoidRightTurn(2);
+          avoidRightTurn();
         }  
       break;
 
-    case 6:
+    case 5:
       if(sensor.track == 3) {
-        avoidForward(11);
+        avoidForwardShort();
       } else {
         stance.avoidTicks = 0;
         stance.avoidState++;
       }
       break;
 
-    case 7:
+    case 6:
       if(stance.clockwise) {
-        avoidRightTurn(1);
+        avoidRightTurn();
       } else {
-        avoidLeftTurn(1);
+        avoidLeftTurn();
       }    
       break;
 
-    case 8:
+    case 7:
       avoidWrapUp();
       break;
   }
