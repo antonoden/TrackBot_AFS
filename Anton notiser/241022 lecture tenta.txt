@@ -1,0 +1,24 @@
+30p totalt. GOdkänd gränsen är på 21p. 4:a = 24p, 5:a=27p
+
+Tentan är 30st kryssfrågor
+
+över 50% schemaläggning, EDF, RM, FCFS etc. tid
+20% Resurshantering och nätverk
+10% Labben/volvo
+10% ? 
+
+kan vara några frågor där de bara finns ett rätt svar. 
+kan finnas frågor där vilka påstående stämmer överens med humhumhum
+nån fråga är en räknefråga. Kommer vara EDF, Deadline RM eller RM
+Vi kommer få alla formler för att beräkna Ui, U(n), R0, R1, 
+
+EDF har inget R-värde. De gäller Rate monotonic. 
+
+Kommer bild på schema. och de kommer ett påstående om schemat. 
+
+Ifall man svarar fel på en flerfrågeval så blir det minuspoäng på den specifika frågan. 
+
+Man måste sitta i 45 min på tentan minst. 
+
+quizen ska hjälpa till för för beräkningsfrågorna på tentan. 
+

@@ -1,0 +1,44 @@
+Föreläsnign Volvo*****************
+
+christoffer, patrik nilsson
+volvo autonomus solution
+självkörande lastbilar/fordon
+
+alla som jobbar med självkörande teknik är under samma bolag. volvo autonomous solution
+
+säljer transport som en tjänst. Inte själva fordona. 
+
+jobbar de något med självkörande jordbruk? 
+
+volvo siktar på självgående lastbilar mellan terminaler först. 
+
+volvo utvecklar lastbilen. En partner till VOlvo gör självkörandesystemet. 
+
+vid mining så gör volvo hela systemet själva. skillnaden vid en gruva blir att det finns bättre kontroll
+över omgivningen. 
+
+SAE automation levels
+
+Nvidia drive PX
+C eller C++ för grafikbehandling. 
+
+Maskininlärningsteknik används. Kraftfullt inbyggt system. 
+deadlinessytsem för allt som styr maskiner i . 
+I stort sett all programmering för att styra bilen är i C. 
+
+TARA haulage system. 
+
+infrastuktur:
+control rum, laddstation, emergnecy stop infrasturcue
+
+Auto driving ki:
+computer
+sensors
+
+base maschine
+
+fordonet kan laddas upp sjlv genom att åka i nerförsbacke. 
+
+testmiljer och devmiljö kör i mestadels python men även c++. 
+
+
