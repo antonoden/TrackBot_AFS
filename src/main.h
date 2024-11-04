@@ -246,11 +246,10 @@ void avoidObstacle()
         Serial.println("Case 4 else");
         Serial.flush();
         stance.avoidTicks = 0;
-        stance.avoidState = 5;
+        stance.avoidState++;
       }
       break;
      
-
     case 5: // Gör sista svängen för att komma tillbaka. 
       Serial.println("Case 5");
       Serial.flush();
@@ -266,34 +265,5 @@ void avoidObstacle()
       Serial.flush();
       avoidWrapUp();
       break;
-    /*
-    case 5: // sväng för att komma tilbaka till linjen
-      if(stance.clockwise) {
-          avoidLeftTurn(2);
-        } else {
-          avoidRightTurn(2);
-        }  
-      break;
-
-    case 6: // kör framåt tills vi når linjen. 
-      if(sensor.track == 3) {
-        avoidForward(20);
-      } else {       
-        stance.avoidTicks = 0;
-        stance.avoidState++;
-      }
-      break;
-
-    case 7: // 
-      if(stance.avoidTicks == 0)
-        avoidForward(1); 
-      else if (stance.clockwise) {
-        avoidRightTurn(3);
-      } else {
-        avoidLeftTurn(3);
-      }    
-      break;*/ 
-
-    
   }
 }
